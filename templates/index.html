@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Vocodeur de phase</title>
+		<link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+    <h1></h1>
+
+    <button id="recordButton">🔴</button>
+    <button id="stopButton">⏹</button>
+    <button id="playButton">►</button>
+    
+		<form>
+			<input id="invert" type="radio" name="method" value="invert" checked>Inverser</input> <br/>
+			<input id="ts_nat" type="radio" name="method" value="ts_nat">Étirement temporel (méthode naïve)</input> <br/>
+			<input id="ts_voc" type="radio" name="method" value="ts_voc">Étirement temporel (vocodeur)</input> <br/>
+			<input id="ps_nat" type="radio" name="method" value="ps_nat">Changement d'échelle de fréquence (méthode naïve)</input> <br/>
+			<input id="ps_voc" type="radio" name="method" value="ps_voc">Changement d'échelle de fréquence (vocodeur)</input> <br/>
+			<label for="ratio">Ratio :</label>
+			<input id="ratio" type="number" value="1.0" step="0.1" min="0.1" max="10"/>
+		</form>
+		
+		<button id="convertButton">Convert</button>
+
+    <script src="/static/global.js"></script>
+		<script src="/static/record.js"></script>
+		<script src="/static/stop.js"></script>
+		<script src="/static/play.js"></script>
+		<script src="/static/convert.js"></script>
+</body>
+</html>

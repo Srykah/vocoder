@@ -1,12 +1,21 @@
-var leftchannel = [];
-var rightchannel = [];
-var recorder = null;
-var recordingLength = 0;
-var volume = null;
-var mediaStream = null;
-var sampleRate = 44100;
+var recordButton = document.getElementById("recordButton");
+var stopButton = document.getElementById("stopButton");
+var playButton = document.getElementById("playButton");
+var dismissButton = document.getElementById("dismissButton");
+var convertButton = document.getElementById("convertButton");
+var menuForm = document.getElementById("menuForm");
+
 var context = null;
+var recorder = null;
+var mediaStream = null;
+
+var leftChannel = [];
+var rightChannel = [];
+var recordingLength = 0;
 var blob = null;
+
+var volume = 1;
+var sampleRate = 44100;
 
 function flattenArray(channelBuffer, recordingLength) {
 	var result = new Float32Array(recordingLength);
@@ -42,8 +51,8 @@ function writeUTFBytes(view, offset, string) {
 function createWAV(leftChannel, rightChannel, recordingLength) {
 	// we flat the left and right channels down
 	// Float32Array[] => Float32Array
-	var leftBuffer = flattenArray(leftchannel, recordingLength);
-	var rightBuffer = flattenArray(rightchannel, recordingLength);
+	var leftBuffer = flattenArray(leftChannel, recordingLength);
+	var rightBuffer = flattenArray(rightChannel, recordingLength);
 	// we interleave both channels together
 	// [left[0],right[0],left[1],right[1],...]
 	var interleaved = interleave(leftBuffer, rightBuffer);
@@ -71,7 +80,6 @@ function createWAV(leftChannel, rightChannel, recordingLength) {
 
 	// write the PCM samples
 	var index = 44;
-	var volume = 1;
 	for (var i = 0; i < interleaved.length; i++) {
 		view.setInt16(index, interleaved[i] * (0x7FFF * volume), true);
 		index += 2;
@@ -79,4 +87,11 @@ function createWAV(leftChannel, rightChannel, recordingLength) {
 
 	// our final blob
 	return new Blob([view], { type: 'audio/wav' });
+}
+
+function resetSound() {
+	leftChannel = [];
+	rightChannel = [];
+	recordingLength = 0;
+	blob = null;
 }

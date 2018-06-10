@@ -1,5 +1,3 @@
-var playButton = document.getElementById("playButton");
-
 playButton.addEventListener("click", function () {
 	if (blob == null) {
 		return;

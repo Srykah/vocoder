@@ -1,5 +1,3 @@
-var convertButton = document.getElementById("convertButton");
-
 convertButton.addEventListener("click", function () {
 	if (blob == null) {
 		return;

@@ -7,13 +7,20 @@
 		<link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 <body>
-    <h1></h1>
-
-    <button id="recordButton">🔴</button>
-    <button id="stopButton">⏹</button>
-    <button id="playButton">►</button>
+		<h1>Enregistrez votre voix pour la transformer&nbsp;!</h1>
+		
+		<h2>Mode d'emploi</h2>
+		
+		<p>
+			Cliquez sur le bouton d'enregistrement ci-dessous pour commencer à enregistrer votre voix. Une fois que vous êtes satisfaits, cliquez sur le bouton stop. Ensuite, Choisissez une option de conversion et le ratio à appliquer dans le menu qui vient d'apparaître, cliquez sur convertir et voilà&nbsp;! Vous pouvez télécharger votre voix modifiée&nbsp;!
+		</p>
+		
+    <button id="recordButton">🔴 Enregistrer</button>
+    <button id="stopButton" style="display:none;">⏹ Arrêter l'enregistrement</button>
+    <button id="playButton" style="display:none;">🕪 Jouer l'enregistrement</button>
+		<button id="dismissButton" style="display:none;">❌ Supprimer l'enregistrement</button>
     
-		<form>
+		<form id="menuForm" style="display:none;">
 			<input id="invert" type="radio" name="method" value="invert" checked>Inverser</input> <br/>
 			<input id="ts_nat" type="radio" name="method" value="ts_nat">Étirement temporel (méthode naïve)</input> <br/>
 			<input id="ts_voc" type="radio" name="method" value="ts_voc">Étirement temporel (vocodeur)</input> <br/>
@@ -23,12 +30,15 @@
 			<input id="ratio" type="number" value="1.0" step="0.1" min="0.1" max="10"/>
 		</form>
 		
-		<button id="convertButton">Convert</button>
+		<button id="convertButton" style="display:none;">💾 Convertir</button>
 
-    <script src="/static/global.js"></script>
-		<script src="/static/record.js"></script>
-		<script src="/static/stop.js"></script>
-		<script src="/static/play.js"></script>
-		<script src="/static/convert.js"></script>
+    <script src="static/global.js"></script>
+		<script src="static/record.js"></script>
+		<script src="static/stop.js"></script>
+		<script src="static/play.js"></script>
+		<script src="static/dismiss.js"></script>
+		<script src="static/convert.js"></script>
+		
+		<script src="static/init.js"></script>
 </body>
 </html>

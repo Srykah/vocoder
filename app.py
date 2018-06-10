@@ -11,3 +11,5 @@ def hello():
 #@app.route('/invert', methods=['POST'])
 #def invert():
 #    f = request.files['audio.wav']
+
+app.run(host="0.0.0.0", port=80)

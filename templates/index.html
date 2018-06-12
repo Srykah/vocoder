@@ -51,10 +51,14 @@
 		Cet opérateur consiste à appliquer la transformée de fourier sur une fenetre fini du signal d'entrée, puis de décaler, refaire une transformée et ainsi de suite. On obtient ensuite un tableau de dimension (N x M), avec N = nombre de fréquence dans les FFT,M =  nombre de FFT, sachant que le nombre de FFT multiplié par le temps entre deux FFT correspond au temps totale du signal.
 		</p>
 		<p>
-		Si on trace la matrice des modules de la STFT, on obtient un tableau ressemblant au suivant (c'est un spectrogramme) [[[ mettre image d'un spectrogramme]]]
+		Si on trace la matrice des modules de la STFT, on obtient un tableau ressemblant au suivant (c'est un spectrogramme) <img src = "static/spectrogramme"></img>
 		On a donc en abscisse le temps et en ordonnée les fréquences. 
 		Pour obtenir un son à partir d'une STFT, il suffit d'appliquer la fonction ISTFT. 
 		On commence déjà à comprendre ce qu'il faudra faire afin de pouvoir appliquer les deux fonctions annoncée dans l'introduction.
+		</p>
+		<h4>Python</h4>
+		<p>
+		Nous avons travaillé sous python, et donc nous avons utilisé la bibliothèque scipy.signal qui permet d'effectuer facilement des stft ainsi que des istft. Encore avec scipy, nopus avons utilisé la bibliothèque scipy.io.wavfile pour gérer l'entré et la sortie de son sous le format .wav.
 		</p>
 		<h3>Différentes méthodes</h3>
 		
@@ -79,12 +83,36 @@
 		
 		<h4>Changement d'échelle de fréquence avec vocodeur de phase</h4>
 		<p>
-		Pour avoir un changement d'echelle de fréquence sans changement d'échelel temporelle, on va utiliser astucieusement les méthodes précédentes. C'est à dire qu'on va changer la fréquence de manière naïve, puis on va utiliser le fait qu'on sait modifier l'échelle temporelle sans toucher à l'échelle fréquentielle pour ramener le signal sur la bonne durée. On obtient ainsi un		
+		Pour avoir un changement d'echelle de fréquence sans changement d'échelel temporelle, on va utiliser astucieusement les méthodes précédentes. C'est à dire qu'on va changer la fréquence de manière naïve, puis on va utiliser le fait qu'on sait modifier l'échelle temporelle sans toucher à l'échelle fréquentielle pour ramener le signal sur la bonne durée. On obtient ainsi un changement de fréquence sans changement de temps -> pitch transposition	
 		</p>
 		
+		<h3>Nouvelle méthode</h3>
+		<p>
+		La méthode effectué precedemment nous donne des résultats satisfaisants, mais il y a des problèmes dans certains cas particuliers (évoqués plus haut).
+		Nous avons alors mit en place une autre méthode, qui prend en compte les dérivés partielles temporelles et fréquentielles pour assurer la cohérence dans ces deux espaces.
+		Les dérivés sont calculées de manières discrètes en utilisant la méthode des différences finies.
+		</p>
+		<p>
+		Idée de méthode : On modifie les phases de manière particulière. On le fait frame par frame, et on retient à chaque fois les phases de la frame précédente ainsi que les dérivés temporelles de la frame précédente. On commence par choisir la fréquence pour laquelle l'amplitude était la plus grande à la frame dernière, et propage la phase en utilisant la dérivée temporelle (horizontalement). Ensuite, on propage aussi la phase de manière verticale si l'amplitude des point adjacents n'est pas négligeable. On a ainsi une cohérence verticale et horizontale, ce qui amoindrit les artéfacts.
+		</p>
+		<h3>CONCLUSION</h3>
+		<p>
+		</p>
 		
+		<h4>Documents utiles</h4>
+		<p>
+		Nous mettons en lien les documents qui nous ont permis de comprendre le sujet, dans lesquels apparaissent les programmes complets que nous avons mit en oeuvre.
+		<ol><li>-<a href = "static/script.py" download>Explication simple du principe</a></li>
+		<li>-<a href = "static/script.py" download>Explication algorithme vocodeur</a></li>
+		<li>-<a href = "static/script.py" download>Explication nouvelle méthode</a></li>
+		</ol>
+		 
+		</p>
+		<p>
+		Nous mettons aussi <a href = "static/script.py" download>nos programmes</a>, si vous voulez les utiliser comme base pour d'autres travaux. 
+		</p>
 		
-		
+		<h2>MERCI !</h2>
 		
 		
 		

@@ -57,7 +57,7 @@
 		Cet opérateur consiste à appliquer la Transformée de Fourier sur une fenetre fini du signal d'entrée, puis de décaler, refaire une transformée et ainsi de suite. On obtient ensuite un tableau de dimension (N x M), avec N le nombre de fréquence dans les FFT et M le  nombre de FFT, sachant que le nombre de FFT multiplié par le temps entre deux FFT correspond au temps totale du signal.
 		</p>
 		<p>
-		Si on trace la matrice des modules de la STFT, on obtient un tableau ressemblant au suivant (c'est un spectrogramme) <img src = "static/spectrogramme"></img>
+		Si on trace la matrice des modules de la STFT, on obtient un tableau ressemblant au suivant (c'est un spectrogramme) <img src = "static/spectrogramme.png"></img>
 		</p>
 		<p>
 		On a donc en abscisse le temps et en ordonnée les fréquences. 
@@ -78,12 +78,19 @@
 		
 		<h4>Changement d'échelle de fréquence naïve</h4>
 		<p>
-		De manière ressemblante, la méthode précédente nous permet de modifier la fréquence, mais on a malheureusement un changement d'échelle temporelle en même temps, or ce n'est pas ce que l'on veut.		
+		De manière ressemblante, la méthode précédente nous permet de modifier la fréquence, mais on a malheureusement un changement d'échelle temporelle en même temps, or ce n'est pas ce que l'on veut.
 		</p>
 		
 		<h4>Étirement temporel avec vocodeur de phase</h4>
 		<p>
-		truc 
+		Une approche simple pour étirer un signal tout en gardant les fréquences constantes est de passer par le spectrogramme du signal, d'allonger celui-ci du facteur demandé, et de reconstituer le signal temporel. Cette technique fonctionne bien pour l'amplitude de chaque fréquence, cependant il faut aussi prendre en compte la phase, qui est décalée et rend le signal inaudible.
+		Le vocodeur de phase modifie donc la phase de la stft afin que lors de la reconstitution les recouvrements des fft successives s'additionnent bien avec une phase cohérente.
+		Comme sur le spectrogramme le temps est sur l'axe horizontal, et qu'on corrige le décalage de phase dans le temps, on appelle cette correction de phase le maintien de la cohérence horizontale du signal.
+		</p>
+		<p>
+		Cependant, cet algorithme ne prend pas en compte la cohérence verticale, ou cohérence de phase entre les fréquences adjacentes ; en effet, quand un signal passe d'une composante à une autre, un décalage de phase peut survenir, ce qui rend le signal global métallique et donne un effet d'écho.
+		On remarque après calcul que ce problème ne survient pas pour des ratios entiers.
+		L'algorithme suivant cherche à corriger ce problème.
 		</p>
 		
 		<h4>Changement d'échelle de fréquence avec vocodeur de phase</h4>
@@ -108,9 +115,9 @@
 		<h4>Documents utiles</h4>
 		<p>
 		Nous mettons en lien les documents qui nous ont permis de comprendre le sujet, dans lesquels apparaissent les programmes complets que nous avons mit en oeuvre.
-		<ol><li>-<a href = "static/script.py" download>Explication simple du principe</a></li>
-		<li>-<a href = "static/script.py" download>Explication algorithme vocodeur</a></li>
-		<li>-<a href = "static/script.py" download>Explication nouvelle méthode</a></li>
+		<ol><li><a href = "static/PhaseVocoderTutorial.pdf" download>Explication simple du principe</a></li>
+		<li><a href = "static/laroche_dolson.pdf" download>Explication algorithme vocodeur</a></li>
+		<li><a href = "static/ltfatnote050.pdf" download>Explication nouvelle méthode</a></li>
 		</ol>
 		 
 		</p>

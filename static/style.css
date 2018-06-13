@@ -5,6 +5,11 @@ body {
 	font:1.2em/1.62 sans-serif;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 h1, h2, h3 {
 	line-height:1.2;
 }

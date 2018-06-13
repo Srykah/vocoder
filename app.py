@@ -144,5 +144,4 @@ def ps_nm():
 def isReady(filename):
     filename = os.path.join("static", filename)
     return '', (200 if os.path.isfile(filename) else 204)
-
-app.run(host="0.0.0.0", port=443, ssl_context='adhoc')
+ 

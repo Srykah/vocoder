@@ -23,9 +23,11 @@
 		<form id="menuForm" style="display:none;">
 			<input id="invert" type="radio" name="method" value="invert" checked>Inverser</input> <br/>
 			<input id="ts_nat" type="radio" name="method" value="ts_nat">Étirement temporel (méthode naïve)</input> <br/>
-			<input id="ts_voc" type="radio" name="method" value="ts_voc">Étirement temporel (vocodeur)</input> <br/>
 			<input id="ps_nat" type="radio" name="method" value="ps_nat">Changement d'échelle de fréquence (méthode naïve)</input> <br/>
+			<input id="ts_voc" type="radio" name="method" value="ts_voc">Étirement temporel (vocodeur)</input> <br/>
 			<input id="ps_voc" type="radio" name="method" value="ps_voc">Changement d'échelle de fréquence (vocodeur)</input> <br/>
+			<input id="ts_nm" type="radio" name="method" value="ts_nm">Étirement temporel avec la nouvelle méthode</input> <br/>
+			<input id="ps_nm" type="radio" name="method" value="ps_nm">Changement d'échelle de fréquence avec la nouvelle méthode</input> <br/>
 			<label for="ratio">Ratio :</label>
 			<input id="ratio" type="number" value="1.0" step="0.1" min="0.1" max="10"/>
 		</form>

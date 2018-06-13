@@ -47,7 +47,7 @@ def ts_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementMal, args=(save_filename, ratio,))
+    p = Process(target=jouerLentementMal, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -64,7 +64,7 @@ def ts_voc():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementBien, args=(save_filename, ratio,))
+    p = Process(target=jouerLentementBien, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -83,14 +83,14 @@ def ps_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementMal, args=(save_filename, int(1/ratio),))
+    p = Process(target=jouerLentementMal, args=(save_filename, 1.0 / float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
 
 @app.route('/ps_voc', methods=['POST'])
-def ts_nat():
+def ps_voc():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
     ratio = request.form.get('ratio', None)
@@ -101,7 +101,7 @@ def ts_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=augmenterFreq, args=(save_filename, ratio,))
+    p = Process(target=augmenterFreqBien, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -118,7 +118,7 @@ def ts_nm():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=new_methode, args=(save_filename, ratio,))
+    p = Process(target=jouerLentementTresBien, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -135,14 +135,14 @@ def ps_nm():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=new_methode_freq, args=(save_filename, ratio,))
+    p = Process(target=augmenterFreqTresBien, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
 @app.route('/isReady/<filename>')
 def isReady(filename):
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filename = os.path.join("static", filename)
     return '', (200 if os.path.isfile(filename) else 204)
 
 app.run(host="0.0.0.0", port=80)

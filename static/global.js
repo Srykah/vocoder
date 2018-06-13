@@ -87,7 +87,12 @@ function createWAV(leftChannel, rightChannel, recordingLength) {
 	// write the PCM samples
 	var index = 44;
 	for (var i = 0; i < interleaved.length; i++) {
-		view.setInt16(index, interleaved[i] * (1 << (bytesPerSample * 8 - 1) - 1), true);
+		var sample = interleaved[i];
+		if (sample >= 1.0)
+			sample = 1.0;
+		else if (sample <= -1.0)
+			sample = -1.0;
+		view.setInt16(index, sample * (1 << (bytesPerSample * 8 - 1) - 1), true);
 		index += bytesPerSample;
 	}
 

@@ -3,6 +3,13 @@ convertButton.addEventListener("click", function () {
 		return;
 	}
 
+	convertButton.disabled = true;
+	dismissButton.disabled = true;
+	uploadingMessage.style.display = "inline-block";
+	audioTag.style.display = "none";
+	audioTag.pause();
+	downloadButton.style.display = "none";
+	
 	var invertRadio = document.getElementById("invert");
 	var ts_samRadio = document.getElementById("ts_sam");
 	var ps_samRadio = document.getElementById("ps_sam");
@@ -36,13 +43,11 @@ convertButton.addEventListener("click", function () {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', route, true);
 	xhr.onload = function(e) {
+		uploadingMessage.style.display = "none";
+		dismissButton.disabled = false;
 		if (xhr.status == 200) {
 			audiofile = xhr.responseText;
-			convertButton.disabled = true;
-			waitingMessage.style.display = "inline-block";
-			audioTag.style.display = "none";
-			audioTag.pause();
-			downloadButton.style.display = "none";
+			convertingMessage.style.display = "inline-block";
 			var interval = setInterval(function() {
 				var req = new XMLHttpRequest();
 				req.open('GET', '/isReady/' + audiofile, true);
@@ -67,6 +72,7 @@ convertButton.addEventListener("click", function () {
 			}, 1000);
 		} else {
 			alert("Error " + xhr.status + " occurred when trying to upload your file.");
+			convertButton.disabled = false;
 		}
 	};
 	xhr.send(formData);

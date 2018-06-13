@@ -64,7 +64,7 @@ def ts_voc():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=convert_ps_sam, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ps_sam, args=(save_filename, 1.0 / float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -83,7 +83,7 @@ def ps_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=convert_ts_sv, args=(save_filename, 1.0 / float(ratio),))
+    p = Process(target=convert_ts_sv, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200

@@ -54,7 +54,7 @@ convertButton.addEventListener("click", function () {
 				req.onload = function(e) {
 					if (req.status == 200) {
 						convertButton.disabled = false;
-						waitingMessage.style.display = "none";
+						convertingMessage.style.display = "none";
 						audioTag.style.display = "inline-block";
 						audioTag.src = "/static/" + audiofile;
 						audioTag.load();

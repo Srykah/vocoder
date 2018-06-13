@@ -35,6 +35,111 @@ def invert():
     p.start()
     return randomFN, 200
 
+@app.route('/ts_nat', methods=['POST'])
+def ts_nat():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=jouerLentementMal, args=(save_filename, ratio,))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
+@app.route('/ts_voc', methods=['POST'])
+def ts_voc():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=jouerLentementBien, args=(save_filename, ratio,))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
+
+
+@app.route('/ps_nat', methods=['POST'])
+def ps_nat():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=jouerLentementMal, args=(save_filename, int(1/ratio),))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
+
+@app.route('/ps_voc', methods=['POST'])
+def ts_nat():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=augmenterFreq, args=(save_filename, ratio,))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
+@app.route('/ts_nm', methods=['POST'])
+def ts_nm():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=new_methode, args=(save_filename, ratio,))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
+@app.route('/ps_nm', methods=['POST'])
+def ps_nm():
+    # check if the post request has the file part
+    audio = request.files.get('audio', None)
+    ratio = request.form.get('ratio', None)
+    if (ratio == None):
+        return "Error", 400
+    if (audio == None):
+        return "Error", 204
+    randomFN = getRandomFilename()
+    save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
+    audio.save(save_filename)
+    p = Process(target=new_methode_freq, args=(save_filename, ratio,))
+    p.daemon = True
+    p.start()
+    return randomFN, 200
+
 @app.route('/isReady/<filename>')
 def isReady(filename):
     filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)

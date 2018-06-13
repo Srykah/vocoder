@@ -65,31 +65,32 @@ def sortie(fs, data, filename):
 ### Méthodes
 
 def inverser(filename):
-    print(filename)
     fs, data = entree(filename)
     sortie(fs, np.array(data[::-1]), ntpath.basename(filename))
 
-"""
 
-def jouerLentementMal(liste, nom, facteur):
-    sortie(liste, nom + " mal ralenti d'un facteur "+ str(facteur), int(44100/facteur))
+
+def jouerLentementMal(filename, ratio):
+    fs, data = entree(filename)
+    sortie(int(fs/ratio), data, ntpath.basename(filename))
     return()
 
 
-def jouerLentementBien(sound, nom, alpha):
+def jouerLentementBien(filename, ratio):
+    fs, data = entree(filename)
     nperseg_i = 1024  # doit être un multiple de 4...
     noverlap_i = int(0.75 * nperseg_i)  # car ici il est multiplié par 3/4
-    alpha = ((int(alpha * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
-    nperseg_f = int(alpha * nperseg_i)
+    ratio = ((int(ratio * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
+    nperseg_f = int(ratio * nperseg_i)
     noverlap_f = int(0.75 * nperseg_f)
-    rate = 44100
-    _, _, X = sig.stft(sound, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i, nfft=(nperseg_f if alpha >= 1.0 else None))
+    rate = fs
+    _, _, X = sig.stft(data, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i, nfft=(nperseg_f if ratio >= 1.0 else None))
 
     Ra = float(nperseg_i) / float(rate)
-    Rs = alpha * Ra
+    Rs = ratio * Ra
 
     nFreqs, nTimes = X.shape
-    Y = np.zeros((nFreqs, 2 * nTimes), dtype=X.dtype)
+    Y = np.zeros((nFreqs, nTimes), dtype=X.dtype)
 
     Y[:, 0] = X[:, 0]
     for k in range(nFreqs):
@@ -100,28 +101,29 @@ def jouerLentementBien(sound, nom, alpha):
             new_phase_X = np.angle(X[k, u])
             delta_phi = new_phase_X - phase_X - Ra * nu_k
             phase_X = new_phase_X
-            phase_Y += Rs * nu_k + alpha * angle_ppal(delta_phi)
+            phase_Y += Rs * nu_k + ratio * angle_ppal(delta_phi)
             Y[k, u] = np.abs(X[k, u]) * np.exp(1j * phase_Y)
 
-    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if alpha < 1.0 else None))
-    sortie(result[:int(len(result)/2)], nom+" bien rallenti d'un facteur "+str(alpha), rate)
+    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if ratio < 1.0 else None))
+    sortie(rate, result[:int(len(result))], ntpath.basename(filename))
     return()
 
 
-def augmenterFreq(sound, nom, alpha):
+def augmenterFreq(filename, ratio):
+    fs, data = entree(filename)
     nperseg_i = 1024  # doit être un multiple de 4...
     noverlap_i = int(0.75 * nperseg_i)  # car ici il est multiplié par 3/4
-    alpha = ((int(alpha * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
-    nperseg_f = int(alpha * nperseg_i)
+    ratio = ((int(ratio * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
+    nperseg_f = int(ratio * nperseg_i)
     noverlap_f = int(0.75 * nperseg_f)
-    rate = 44100
-    _, _, X = sig.stft(sound, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i, nfft=(nperseg_f if alpha >= 1.0 else None))
+    rate = fs
+    _, _, X = sig.stft(data, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i, nfft=(nperseg_f if ratio >= 1.0 else None))
 
     Ra = float(nperseg_i) / float(rate)
-    Rs = alpha * Ra
+    Rs = ratio * Ra
 
     nFreqs, nTimes = X.shape
-    Y = np.zeros((nFreqs, 2 * nTimes), dtype=X.dtype)
+    Y = np.zeros((nFreqs, nTimes), dtype=X.dtype)
 
     Y[:, 0] = X[:, 0]
     for k in range(nFreqs):
@@ -132,31 +134,32 @@ def augmenterFreq(sound, nom, alpha):
             new_phase_X = np.angle(X[k, u])
             delta_phi = new_phase_X - phase_X - Ra * nu_k
             phase_X = new_phase_X
-            phase_Y += Rs * nu_k + alpha * angle_ppal(delta_phi)
+            phase_Y += Rs * nu_k + ratio * angle_ppal(delta_phi)
             Y[k, u] = np.abs(X[k, u]) * np.exp(1j * phase_Y)
 
-    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if alpha < 1.0 else None))
-    sortie(result[:int(len(result)/2)], nom+" "+str(alpha)+" fois plus aigue", int(rate*alpha))
+    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if ratio < 1.0 else None))
+    sortie(int(ratio*rate), result[:int(len(result))], ntpath.basename(filename))
     return()
 
 
-def new_methode(sound, nom, alpha):
-    L = len(sound)
+def new_methode(filename, ratio):
+    fs, data = entree(filename)
+    L = len(data)
     nperseg_i = 1024  # doit être un multiple de 4...
     noverlap_i = int(0.75 * nperseg_i)  # car ici il est multiplié par 3/4
-    alpha = ((int(alpha * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
-    nperseg_f = int(alpha * nperseg_i)
+    ratio = ((int(ratio * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
+    nperseg_f = int(ratio * nperseg_i)
     noverlap_f = int(0.75 * nperseg_f)
-    rate = 44100
-    _, _, X = sig.stft(sound, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i,
-                       nfft=(nperseg_f if alpha >= 1.0 else None))
+    rate = fs
+    _, _, X = sig.stft(data, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i,
+                       nfft=(nperseg_f if ratio >= 1.0 else None))
 
 
     M, N = X.shape
     Aa = L / N
     Ba = L / M
-    As = alpha * Aa
-    Bs = alpha * Ba
+    As = ratio * Aa
+    Bs = ratio * Ba
     Y = np.zeros((M, N), dtype=X.dtype)
     phaseTableau = np.array([[np.angle(X[m, n]) for n in range(N)] for m in range(M)])
     phaseEstimeTableau = np.zeros((M, N))
@@ -205,8 +208,77 @@ def new_methode(sound, nom, alpha):
         for m in range(M):
             Y[m, n] = np.abs(S[m, n]) * np.exp(1j * phaseEstimeTableau[m, n])
 
-    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if alpha < 1.0 else None))
-    sortie(result, nom + " très bien rallenti d'un facteur " + str(alpha), rate)
+    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if ratio < 1.0 else None))
+    sortie(rate, result[:int(len(result))], ntpath.basename(filename))
     return ()
 
-"""
+def new_methode_freq(filename, ratio):
+    fs, data = entree(filename)
+    L = len(data)
+    nperseg_i = 1024  # doit être un multiple de 4...
+    noverlap_i = int(0.75 * nperseg_i)  # car ici il est multiplié par 3/4
+    ratio = ((int(ratio * nperseg_i) // 4) * 4.) / float(nperseg_i)  # permet d'avoir neperseg_f aussi multiple de 4
+    nperseg_f = int(ratio * nperseg_i)
+    noverlap_f = int(0.75 * nperseg_f)
+    rate = fs
+    _, _, X = sig.stft(data, fs=rate, nperseg=nperseg_i, noverlap=noverlap_i,
+                       nfft=(nperseg_f if ratio >= 1.0 else None))
+
+
+    M, N = X.shape
+    Aa = L / N
+    Ba = L / M
+    As = ratio * Aa
+    Bs = ratio * Ba
+    Y = np.zeros((M, N), dtype=X.dtype)
+    phaseTableau = np.array([[np.angle(X[m, n]) for n in range(N)] for m in range(M)])
+    phaseEstimeTableau = np.zeros((M, N))
+    phaseEstimeTableau[:, 0] = phaseTableau[:, 0]
+    S = np.array([[np.abs(X[m, n]) for n in range(N)] for m in range(M)])
+    diffTtable = np.concatenate((np.concatenate((np.zeros((M, 1)), [
+        [CenteredDifferenceT(Aa, m, n, phaseTableau, M) for n in range(1, N - 1)] for m in range(M)]), axis=1),
+                                 np.zeros((M, 1))), axis=1)
+    diffFtable = np.concatenate((np.concatenate((np.zeros((1, N)),
+                                                 [[CenteredDifferenceF(Ba, m, n, phaseTableau) for n in range(N)]
+                                                  for m in range(1, M - 1)]), axis=0), np.zeros((1, N))), axis=0)
+    # Y[:, 0] = X[:, 0]
+    abstol = 0.0
+    for n in range(1, N):
+        abstol = tol * np.max([np.max(S[:, n]), np.max(S[:, n - 1])])
+        I = []
+        for m in range(M):
+            if S[m, n] > abstol:
+                I.append(m)
+            else:
+                phaseEstimeTableau[m, n] = 2 * random.random() * np.pi
+        heap = []
+        for m in I:
+            heapq.heappush(heap, (-S[m, n-1],(m, n - 1)))
+        while I != []:
+            (rien, (mh, nh)) = heapq.heappop(heap)
+            if nh == n - 1:
+                if mh in I:
+                    phaseEstimeTableau[mh, n] = phaseEstimeTableau[mh, n - 1] + (As / 2) * (
+                                diffTtable[mh, n - 1] + diffTtable[mh, n])
+                    I.remove(mh)
+                    heapq.heappush(heap, (-S[mh, n], (mh, n)))
+            if nh == n:
+                if (mh + 1) in I:
+                    phaseEstimeTableau[mh + 1, n] = phaseEstimeTableau[mh, n] + (Bs / 2) * (
+                                diffFtable[mh, n] + diffFtable[mh + 1, n])
+                    I.remove(mh + 1)
+                    heapq.heappush(heap, (-S[mh +1, n], (mh + 1, n)))
+                if (mh - 1) in I:
+                    phaseEstimeTableau[mh - 1, n] = phaseEstimeTableau[mh, n] + (Bs / 2) * (
+                                diffFtable[mh, n] + diffFtable[mh - 1, n])
+                    I.remove(mh - 1)
+                    heapq.heappush(heap, (-S[mh -1, n],(mh - 1, n)))
+
+    for n in range(N):
+        for m in range(M):
+            Y[m, n] = np.abs(S[m, n]) * np.exp(1j * phaseEstimeTableau[m, n])
+
+    _, result = sig.istft(Y, fs=rate, nperseg=nperseg_f, noverlap=noverlap_f, nfft=(nperseg_i if ratio < 1.0 else None))
+    sortie(int(ratio*rate), result[:int(len(result))], ntpath.basename(filename))
+    return ()
+

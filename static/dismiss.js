@@ -8,6 +8,8 @@ dismissButton.addEventListener("click", function () {
 	menuForm.style.display = "none";
 	convertButton.style.display = "none";
 	waitingMessage.style.display = "none";
+	audioTag.style.display = "none";
+	audioTag.pause();
 	downloadButton.style.display = "none";
 	recordButton.style.display = "inline-block";
 });

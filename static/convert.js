@@ -4,12 +4,12 @@ convertButton.addEventListener("click", function () {
 	}
 
 	var invertRadio = document.getElementById("invert");
-	var ts_natRadio = document.getElementById("ts_nat");
-	var ts_vocRadio = document.getElementById("ts_voc");
-	var ps_natRadio = document.getElementById("ps_nat");
-	var ps_vocRadio = document.getElementById("ps_voc");
-	var ts_nmRadio = document.getElementById("ts_nm");
-	var ps_nmRadio = document.getElementById("ps_nm");
+	var ts_samRadio = document.getElementById("ts_sam");
+	var ps_samRadio = document.getElementById("ps_sam");
+	var ts_svRadio = document.getElementById("ts_sv");
+	var ps_svRadio = document.getElementById("ps_sv");
+	var ts_avRadio = document.getElementById("ts_av");
+	var ps_avRadio = document.getElementById("ps_av");
 	var ratioInput = document.getElementById("ratio");
 	
 	var formData = new FormData();
@@ -20,34 +20,39 @@ convertButton.addEventListener("click", function () {
 	
 	if (invertRadio.checked)
 		route = '/invert';
-	else if (ts_natRadio.checked)
-		route = '/ts_nat';
-	else if (ts_vocRadio.checked)
-		route = '/ts_voc';
-	else if (ps_natRadio.checked)
-		route = '/ps_nat';
-	else if (ps_vocRadio.checked)
-		route = '/ps_voc';
-	else if (ts_nmRadio.checked)
-		route = '/ts_nm';
-	else if (ps_nmRadio.checked)
-		route = '/ps_nm';
+	else if (ts_samRadio.checked)
+		route = '/ts_sam';
+	else if (ps_samRadio.checked)
+		route = '/ps_sam';
+	else if (ts_svRadio.checked)
+		route = '/ts_sv';
+	else if (ps_svRadio.checked)
+		route = '/ps_sv';
+	else if (ts_avRadio.checked)
+		route = '/ts_av';
+	else if (ps_avRadio.checked)
+		route = '/ps_av';
 		
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', route, true);
 	xhr.onload = function(e) {
 		if (xhr.status == 200) {
 			audiofile = xhr.responseText;
-			convertButton.disable = false;
+			convertButton.disabled = true;
 			waitingMessage.style.display = "inline-block";
+			audioTag.style.display = "none";
+			audioTag.pause();
 			downloadButton.style.display = "none";
 			var interval = setInterval(function() {
 				var req = new XMLHttpRequest();
 				req.open('GET', '/isReady/' + audiofile, true);
 				req.onload = function(e) {
 					if (req.status == 200) {
+						convertButton.disabled = false;
 						waitingMessage.style.display = "none";
-						convertButton.disable = false;
+						audioTag.style.display = "inline-block";
+						audioTag.src = "/static/" + audiofile;
+						audioTag.load();
 						downloadButton.style.display = "inline-block";
 						clearInterval(interval);
 					}

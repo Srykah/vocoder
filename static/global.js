@@ -4,6 +4,7 @@ var playButton = document.getElementById("playButton");
 var dismissButton = document.getElementById("dismissButton");
 var convertButton = document.getElementById("convertButton");
 var waitingMessage = document.getElementById("waitingMessage");
+var audioTag = document.getElementById("audioTag");
 var downloadButton = document.getElementById("downloadButton");
 var menuForm = document.getElementById("menuForm");
 

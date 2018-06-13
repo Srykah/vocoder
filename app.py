@@ -30,12 +30,12 @@ def invert():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=inverser, args=(save_filename,))
+    p = Process(target=convert_invert, args=(save_filename,))
     p.daemon = True
     p.start()
     return randomFN, 200
 
-@app.route('/ts_nat', methods=['POST'])
+@app.route('/ts_sam', methods=['POST'])
 def ts_nat():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -47,12 +47,12 @@ def ts_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementMal, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ts_sam, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
-@app.route('/ts_voc', methods=['POST'])
+@app.route('/ps_sam', methods=['POST'])
 def ts_voc():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -64,14 +64,14 @@ def ts_voc():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementBien, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ps_sam, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
 
 
-@app.route('/ps_nat', methods=['POST'])
+@app.route('/ts_sv', methods=['POST'])
 def ps_nat():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -83,13 +83,13 @@ def ps_nat():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementMal, args=(save_filename, 1.0 / float(ratio),))
+    p = Process(target=convert_ts_sv, args=(save_filename, 1.0 / float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
 
-@app.route('/ps_voc', methods=['POST'])
+@app.route('/ps_sv', methods=['POST'])
 def ps_voc():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -101,12 +101,12 @@ def ps_voc():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=augmenterFreqBien, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ps_sv, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
-@app.route('/ts_nm', methods=['POST'])
+@app.route('/ts_av', methods=['POST'])
 def ts_nm():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -118,12 +118,12 @@ def ts_nm():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=jouerLentementTresBien, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ts_av, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
 
-@app.route('/ps_nm', methods=['POST'])
+@app.route('/ps_av', methods=['POST'])
 def ps_nm():
     # check if the post request has the file part
     audio = request.files.get('audio', None)
@@ -135,7 +135,7 @@ def ps_nm():
     randomFN = getRandomFilename()
     save_filename = os.path.join(app.config['UPLOAD_FOLDER'], randomFN)
     audio.save(save_filename)
-    p = Process(target=augmenterFreqTresBien, args=(save_filename, float(ratio),))
+    p = Process(target=convert_ps_av, args=(save_filename, float(ratio),))
     p.daemon = True
     p.start()
     return randomFN, 200
@@ -145,4 +145,4 @@ def isReady(filename):
     filename = os.path.join("static", filename)
     return '', (200 if os.path.isfile(filename) else 204)
 
-app.run(host="0.0.0.0", port=80)
+app.run(host="0.0.0.0", port=443, ssl_context='adhoc')

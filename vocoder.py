@@ -157,35 +157,39 @@ def sortie(fs, data, filename):
 
 ### Méthodes
 
-def inverser(filename):
+def convert_invert(filename):
     fs, data = entree(filename)
     sortie(fs, np.array(data[::-1]), ntpath.basename(filename))
 
 
-def jouerLentementMal(filename, ratio):
+def convert_ts_sam(filename, ratio):
     fs, data = entree(filename)
     sortie(int(fs/ratio), data, ntpath.basename(filename))
 
+
+def convert_ps_sam(filename, ratio):
+    convert_ts_sam(filename, 1.0 / float(ratio))
+
     
-def jouerLentementBien(filename, ratio):
+def convert_ts_sv(filename, ratio):
     fs, data = entree(filename)
     result = vocodeur_simple(fs, data, ratio)
     sortie(fs, result, ntpath.basename(filename))
 
 
-def augmenterFreqBien(filename, ratio):
+def convert_ps_sv(filename, ratio):
     fs, data = entree(filename)
     result = vocodeur_simple(fs, data, ratio)
     sortie(int(ratio * fs), result, ntpath.basename(filename))
 
 
-def jouerLentementTresBien(filename, ratio):
+def convert_ts_av(filename, ratio):
     fs, data = entree(filename)
     result = vocodeur_avance(fs, data, ratio)
     sortie(fs, result, ntpath.basename(filename))
 
 
-def augmenterFreqTresBien(filename, ratio):
+def convert_ps_av(filename, ratio):
     fs, data = entree(filename)
     result = vocodeur_avance(fs, data, ratio)
     sortie(int(ratio * fs), result, ntpath.basename(filename))

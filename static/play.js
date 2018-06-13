@@ -6,4 +6,7 @@ playButton.addEventListener("click", function () {
 	var url = window.URL.createObjectURL(blob);
 	var audio = new Audio(url);
 	audio.play();
+	audio.onended = function(e) {
+		window.URL.revokeObjectURL(url);
+	};
 });

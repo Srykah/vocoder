@@ -42,21 +42,26 @@
 		
 		<h4>Vocodeur</h4>
 		<p>
-		Le vocodeur de phase est un vocodeur particulier qui utilise les phases des signaux à transformer afin d'obtenier les changements fréquentiels ou temporels voulus. Utilisation analyse/synthèse : on analyse le signal d'entrée en suivant un modèle, puis le le resynthétise en changeants certians paramètres du modèle (ici modèle = somme de suinusoïdes, paramètre = fréquences et amplitudes au cours du temps). Les deux applications majeur du vocodeur de phase sont le changement de fréquence d'un signal de parole sans changer l'axe des temps (pitch transposition) et changer l'axe des temps sans changer la fréquence, donc la hauteur de la voix (time scaling).
-			Pour cela, nous allons commencer par présenter les outils que nous allons utiliser tout le long de ce projet.
+		Le vocodeur de phase est un vocodeur particulier qui utilise les phases des signaux à transformer afin d'obtenir les changements fréquentiels ou temporels voulus. Le vocodeur de phase utilise la méthode de l'analyse/synthèse : on analyse le signal d'entrée en suivant un modèle suivant certains paramètres, puis on le resynthétise en changeants certians paramètres du modèle. Ici les signaux sont modelisés comme une somme de suinusoïdes et les paramètres sont les fréquences et les amplitudes au cours du temps de chaque fréquence.
+		</p>
+		<p>
+		Les deux applications majeures du vocodeur de phase sont le changement de fréquence d'un signal de parole sans changer l'axe des temps (pitch transposition) et changer l'axe des temps sans changer la fréquence, donc la hauteur de la voix (time scaling).
+		Pour cela, nous allons commencer par présenter les outils que nous allons utiliser tout le long de ce projet.
 		</p>
 		<h4>Transformée de Fourier à court terme</h4>
 		<p>
-		Nous avons en entrée un signal numérique représentant le signal de voix que nous voulons présenté sous la forme d'une liste d'amplitude. La fréquence d'échantillonnage de ce signal est pris f0 = 44100 Hz (les signaux audibles les plus aigues sont à 20000 Hz, donc cette fréquence permet de respecter le critère de Shanon.
+		Nous avons en entrée un signal numérique représentant le signal de voix, présenté sous la forme d'une liste d'amplitude. La fréquence d'échantillonnage de ce signal est souvent prise f0 = 44100 Hz (les signaux audibles les plus aigues sont à 20000 Hz, donc cette fréquence permet de respecter le critère de Shanon).
 		</p>
 		<p>
-		Nous allons utiliser un outil mathématique dénommé la transformée de Fourier à court terme (TFCT, ou short-time Fourier transform, STFT). La différence avec la transformée de Fourier habituelle est que cet opérateur mathématique peut être appliqueé à un signal temporel ayant sa fréquence qui varie. 
-		Cet opérateur consiste à appliquer la transformée de fourier sur une fenetre fini du signal d'entrée, puis de décaler, refaire une transformée et ainsi de suite. On obtient ensuite un tableau de dimension (N x M), avec N = nombre de fréquence dans les FFT,M =  nombre de FFT, sachant que le nombre de FFT multiplié par le temps entre deux FFT correspond au temps totale du signal.
+		Nous allons utiliser un outil mathématique dénommé la Transformée de Fourier à Court Terme (TFCT, ou short-time Fourier transform, STFT). La différence avec la transformée de Fourier habituelle est que cet opérateur mathématique peut être appliqueé à un signal temporel ayant sa fréquence qui varie. 
+		Cet opérateur consiste à appliquer la Transformée de Fourier sur une fenetre fini du signal d'entrée, puis de décaler, refaire une transformée et ainsi de suite. On obtient ensuite un tableau de dimension (N x M), avec N le nombre de fréquence dans les FFT et M le  nombre de FFT, sachant que le nombre de FFT multiplié par le temps entre deux FFT correspond au temps totale du signal.
 		</p>
 		<p>
 		Si on trace la matrice des modules de la STFT, on obtient un tableau ressemblant au suivant (c'est un spectrogramme) <img src = "static/spectrogramme"></img>
+		</p>
+		<p>
 		On a donc en abscisse le temps et en ordonnée les fréquences. 
-		Pour obtenir un son à partir d'une STFT, il suffit d'appliquer la fonction ISTFT. 
+		Pour obtenir un son à partir d'une STFT, il suffit d'appliquer la fonction ISTFT (inverse de la STFT). 
 		On commence déjà à comprendre ce qu'il faudra faire afin de pouvoir appliquer les deux fonctions annoncée dans l'introduction.
 		</p>
 		<h4>Python</h4>
@@ -67,13 +72,13 @@
 		
 		<h4>Étirement temporel naïf</h4>
 		<p>
-		Pour jouer un signal plus lentement, il suffirait de le jouer en considérant qu'il a une fréquence d'échantillonnage plus petite.
-		Il existe cependant un problème : Si on appelle signal de fréquence n la ligne n de la STFT du signal d'entrée, alors la fréquence réelle associée à ce signal s'exprime comme la différence de phase entre deux abscisses successives divisé par la durée entre ces deux abscisse. En jouant juste le fichier plus lentement, on obtient un changement de fréquence. En effet, en doublant la durée entre deux fft successives, on divise par 2 la fréquence. C'est bien ce qu'on remarque quand on fait l'essai.   
+		Pour jouer un signal plus lentement, on peut penser qu'il suffirait de le jouer en considérant qu'il a une fréquence d'échantillonnage plus petite.
+		Il existe cependant un problème : Si on appelle "composante de fréquence n" la ligne n de la STFT du signal d'entrée, alors la fréquence réelle associée à ce signal s'exprime comme la différence de phase entre deux points d'abscisses successives divisé par la durée entre ces deux abscisse. En jouant juste le fichier plus lentement, on obtient un changement de fréquence. En effet, en doublant la durée entre deux fft successives, on divise par 2 la fréquence. C'est bien ce qu'on remarque quand on fait l'essai.   
 		</p>
 		
 		<h4>Changement d'échelle de fréquence naïve</h4>
 		<p>
-		De manière ressemblante, la méthode précédente nous permet de modifier la fréquence, mais on a malheureusement un changement d'échelle temporelle en même tempsn or ce n'est pce qu'on veut.		
+		De manière ressemblante, la méthode précédente nous permet de modifier la fréquence, mais on a malheureusement un changement d'échelle temporelle en même temps, or ce n'est pas ce que l'on veut.		
 		</p>
 		
 		<h4>Étirement temporel avec vocodeur de phase</h4>
@@ -83,20 +88,21 @@
 		
 		<h4>Changement d'échelle de fréquence avec vocodeur de phase</h4>
 		<p>
-		Pour avoir un changement d'echelle de fréquence sans changement d'échelel temporelle, on va utiliser astucieusement les méthodes précédentes. C'est à dire qu'on va changer la fréquence de manière naïve, puis on va utiliser le fait qu'on sait modifier l'échelle temporelle sans toucher à l'échelle fréquentielle pour ramener le signal sur la bonne durée. On obtient ainsi un changement de fréquence sans changement de temps -> pitch transposition	
+		Pour avoir un changement d'echelle de fréquence sans changement d'échelle temporelle, on va utiliser astucieusement les méthodes précédentes. C'est à dire qu'on va changer la fréquence de manière naïve, puis on va utiliser le fait qu'on sait modifier l'échelle temporelle sans toucher à l'échelle fréquentielle pour ramener le signal sur la bonne durée. On obtient ainsi un changement de fréquence sans changement de temps -> pitch transposition	
 		</p>
 		
 		<h3>Nouvelle méthode</h3>
 		<p>
-		La méthode effectué precedemment nous donne des résultats satisfaisants, mais il y a des problèmes dans certains cas particuliers (évoqués plus haut).
+		La méthode effectuée precedemment nous donne des résultats satisfaisants, mais il y a des problèmes dans certains cas particuliers (évoqués plus haut).
 		Nous avons alors mit en place une autre méthode, qui prend en compte les dérivés partielles temporelles et fréquentielles pour assurer la cohérence dans ces deux espaces.
-		Les dérivés sont calculées de manières discrètes en utilisant la méthode des différences finies.
+		Les dérivés sont calculées de manières discrètes en utilisant la méthode des différences finies. C'est l'équivalent des dérivés mais en discret. 
 		</p>
 		<p>
-		Idée de méthode : On modifie les phases de manière particulière. On le fait frame par frame, et on retient à chaque fois les phases de la frame précédente ainsi que les dérivés temporelles de la frame précédente. On commence par choisir la fréquence pour laquelle l'amplitude était la plus grande à la frame dernière, et propage la phase en utilisant la dérivée temporelle (horizontalement). Ensuite, on propage aussi la phase de manière verticale si l'amplitude des point adjacents n'est pas négligeable. On a ainsi une cohérence verticale et horizontale, ce qui amoindrit les artéfacts.
+		Idée de méthode : On modifie les phases de manière ordonnée. On le fait frame par frame, et on retient à chaque fois les phases de la frame précédente ainsi que les dérivés temporelles de la frame précédente. On commence par choisir la fréquence pour laquelle l'amplitude était la plus grande à la frame dernière, et propage la phase en utilisant la dérivée temporelle (horizontalement), c'est à dire qu'on complète de manière linéaire. Ensuite, et c'est ce qui fait la spécificité de cette méthode, on propage aussi la phase de manière verticale si l'amplitude des point adjacents n'est pas négligeable. On a ainsi une cohérence verticale et horizontale, ce qui amoindrit les artéfacts.
 		</p>
 		<h3>CONCLUSION</h3>
 		<p>
+		Travailler numériquement sur des signaux sonores demande une compréhension particulière du lien temps/fréquence. Cela permet de comprendre certains phénomènes, tels que la baisse de fréquence liée à l'allongement du temps. Cette compréhension permet aussi de régler ces problèmes, grace aux différentes méthodes que nous avons implémenté. Nos résultats sonnent cependant encore métalliques pour les changements de fréquence et de durée non-entiers. De plus, les temps de calculs sont assez longs, rendant impossible l'utilisation algorithmes en temps réel.
 		</p>
 		
 		<h4>Documents utiles</h4>
@@ -114,7 +120,9 @@
 		
 		<h2>MERCI !</h2>
 		
-    <script src="static/global.js"></script>
+		<h4> Travail effectué par Thomas BÉCAVIN et Galaad LECONTE dans le cadre du projet de 1ere année du cursus Supélec de l'école CentraleSupélec, sous la supervision de Gilles CHARDON</h4>
+		
+		<script src="static/global.js"></script>
 		<script src="static/record.js"></script>
 		<script src="static/stop.js"></script>
 		<script src="static/play.js"></script>

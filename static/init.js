@@ -12,12 +12,10 @@ navigator.getUserMedia({audio:true}, function (e) {
 	// https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createScriptProcessor
 	// bufferSize: the onaudioprocess event is called when the buffer is full
 	var bufferSize = 2048;
-	var numberOfInputChannels = 2;
-	var numberOfOutputChannels = 2;
 	if (context.createScriptProcessor) {
-		recorder = context.createScriptProcessor(bufferSize, numberOfInputChannels, numberOfOutputChannels);
+		recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
 	} else {
-		recorder = context.createJavaScriptNode(bufferSize, numberOfInputChannels, numberOfOutputChannels);
+		recorder = context.createJavaScriptNode(bufferSize, channelCount, channelCount);
 	}
 
 	recorder.onaudioprocess = function (e) {

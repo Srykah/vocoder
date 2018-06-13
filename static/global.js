@@ -3,6 +3,8 @@ var stopButton = document.getElementById("stopButton");
 var playButton = document.getElementById("playButton");
 var dismissButton = document.getElementById("dismissButton");
 var convertButton = document.getElementById("convertButton");
+var waitingMessage = document.getElementById("waitingMessage");
+var downloadButton = document.getElementById("downloadButton");
 var menuForm = document.getElementById("menuForm");
 
 var context = null;
@@ -13,9 +15,11 @@ var leftChannel = [];
 var rightChannel = [];
 var recordingLength = 0;
 var blob = null;
+var audiofile = null;
 
-var volume = 1;
 var sampleRate = 44100;
+var channelCount = 2;
+var bytesPerSample = 2;
 
 function flattenArray(channelBuffer, recordingLength) {
 	var result = new Float32Array(recordingLength);
@@ -58,31 +62,33 @@ function createWAV(leftChannel, rightChannel, recordingLength) {
 	var interleaved = interleave(leftBuffer, rightBuffer);
 
 	// we create our wav file
-	var buffer = new ArrayBuffer(44 + interleaved.length * 2);
+	var headerSize = 44;
+	var dataSize = interleaved.length * bytesPerSample;
+	var buffer = new ArrayBuffer(headerSize + dataSize);
 	var view = new DataView(buffer);
 
 	// RIFF chunk descriptor
 	writeUTFBytes(view, 0, 'RIFF');
-	view.setUint32(4, 44 + interleaved.length * 2, true);
+	view.setUint32(4, headerSize + dataSize - 8, true); // we have to substract 8 because reasons
 	writeUTFBytes(view, 8, 'WAVE');
 	// FMT sub-chunk
 	writeUTFBytes(view, 12, 'fmt ');
-	view.setUint32(16, 16, true); // chunkSize
-	view.setUint16(20, 1, true); // wFormatTag
-	view.setUint16(22, 2, true); // wChannels: stereo (2 channels)
+	view.setUint32(16, 16, true); // FMT sub-chunk size : pretty much always 16
+	view.setUint16(20, 1, true); // wFormatTag, 1 = PCM
+	view.setUint16(22, channelCount, true); // wChannels: stereo (2 channels)
 	view.setUint32(24, sampleRate, true); // dwSamplesPerSec
-	view.setUint32(28, sampleRate * 4, true); // dwAvgBytesPerSec
-	view.setUint16(32, 4, true); // wBlockAlign
-	view.setUint16(34, 16, true); // wBitsPerSample
+	view.setUint32(28, sampleRate * bytesPerSample * channelCount, true); // dwAvgBytesPerSec
+	view.setUint16(32, bytesPerSample * channelCount, true); // wBlockAlign
+	view.setUint16(34, bytesPerSample * 8, true); // wBitsPerSample
 	// data sub-chunk
 	writeUTFBytes(view, 36, 'data');
-	view.setUint32(40, interleaved.length * 2, true);
+	view.setUint32(40, dataSize, true); // data sub-chunk size
 
 	// write the PCM samples
 	var index = 44;
 	for (var i = 0; i < interleaved.length; i++) {
-		view.setInt16(index, interleaved[i] * (0x7FFF * volume), true);
-		index += 2;
+		view.setInt16(index, interleaved[i] * (1 << (bytesPerSample * 8 - 1) - 1), true);
+		index += bytesPerSample;
 	}
 
 	// our final blob

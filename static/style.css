@@ -5,9 +5,17 @@ body {
 	font:1.2em/1.62 sans-serif;
 }
 
+div {
+	padding:.5em;
+}
+
 img {
     max-width: 100%;
     height: auto;
+}
+
+input, audio {
+	vertical-align: middle;
 }
 
 h1, h2, h3 {

@@ -6,16 +6,6 @@ convertButton.addEventListener("click", function () {
 	// display upload state
 	displayState("upload");
 	
-	// get form elements
-	var invertRadio = document.getElementById("invert");
-	var ts_samRadio = document.getElementById("ts_sam");
-	var ps_samRadio = document.getElementById("ps_sam");
-	var ts_svRadio = document.getElementById("ts_sv");
-	var ps_svRadio = document.getElementById("ps_sv");
-	var ts_avRadio = document.getElementById("ts_av");
-	var ps_avRadio = document.getElementById("ps_av");
-	var ratioInput = document.getElementById("ratio");
-	
 	// create form data to send
 	var formData = new FormData();
 	
@@ -73,7 +63,7 @@ convertButton.addEventListener("click", function () {
 			}, 1000);
 		} else { // if upload unsuccessful
 			alert("Error " + xhr.status + " occurred when trying to upload your file.");
-			convertButton.disabled = false;
+			dismissButton.click();
 		}
 	};
 	xhr.send(formData);

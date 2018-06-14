@@ -44,6 +44,8 @@ convertButton.addEventListener("click", function () {
 	xhr.open('POST', route, true);
 	xhr.onload = function(e) { // upload ended
 		if (xhr.status == 200) { // if upload successful
+			// retrieve audio filename
+			audiofile = xhr.responseText;
 			// display convert state
 			displayState("convert");
 			// set recurrent event to check if the result is ready

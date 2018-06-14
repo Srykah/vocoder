@@ -5,8 +5,7 @@ recordButton.addEventListener("click", function () {
 		mediaStream.connect(recorder);
 		recorder.connect(context.destination);
 		
-		// we make the record button invisible, and the stop button visible
-		recordButton.style.display = "none";
-		stopButton.style.display = "inline-block";
+		// we display the record state
+		displayState("record");
 	}
 });

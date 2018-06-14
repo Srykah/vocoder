@@ -1,17 +1,18 @@
 var recordButton = document.getElementById("recordButton");
 var stopButton = document.getElementById("stopButton");
-var playButton = document.getElementById("playButton");
+var audioSource = document.getElementById("audioSource");
 var dismissButton = document.getElementById("dismissButton");
+var menuForm = document.getElementById("menuForm");
 var convertButton = document.getElementById("convertButton");
 var uploadingMessage = document.getElementById("uploadingMessage");
 var convertingMessage = document.getElementById("convertingMessage");
-var audioTag = document.getElementById("audioTag");
+var audioResult = document.getElementById("audioResult");
 var downloadButton = document.getElementById("downloadButton");
-var menuForm = document.getElementById("menuForm");
 
 var context = null;
 var recorder = null;
 var mediaStream = null;
+var sourceURL = null;
 
 var leftChannel = [];
 var rightChannel = [];

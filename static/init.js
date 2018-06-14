@@ -29,3 +29,5 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 } else {
 	alert('getUserMedia() is not supported by your browser');
 }
+
+displayInit();

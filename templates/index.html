@@ -16,11 +16,11 @@
 		</p>
 		
     <button id="recordButton">🔴 Enregistrer</button>
-    <button id="stopButton" style="display:none;">⏹ Arrêter l'enregistrement</button>
-    <button id="playButton" style="display:none;">🕪 Jouer l'enregistrement</button>
-		<button id="dismissButton" style="display:none;">❌ Supprimer l'enregistrement</button>
+    <button id="stopButton">⏹ Arrêter l'enregistrement</button>
+    <audio id="audioSource" type="audio/wav" controls></audio>
+		<button id="dismissButton">❌ Supprimer l'enregistrement</button>
     
-		<form id="menuForm" style="display:none;">
+		<form id="menuForm">
 			<input id="invert" type="radio" name="method" value="invert" checked>Inverser</input> <br/>
 			<input id="ts_sam" type="radio" name="method" value="ts_sam">Étirement temporel (rééchantillonage)</input> <br/>
 			<input id="ps_sam" type="radio" name="method" value="ps_sam">Changement d'échelle de fréquence (rééchantillonage)</input> <br/>
@@ -32,12 +32,12 @@
 			<input id="ratio" type="number" value="2.0" step="0.1" min="0.1" max="10"/>
 		</form>
 		
-		<button id="convertButton" style="display:none;">🎛 Convertir</button> <br/>
+		<button id="convertButton">🎛 Convertir</button> <br/>
 		<div>
-			<p id="uploadingMessage" style="display:none">Téléversement en cours...</p>
-			<p id="convertingMessage" style="display:none">En attente de conversion...</p>
-			<audio id="audioTag" type="audio/wav" style="display:none" controls></audio>
-			<button id="downloadButton" style="display:none;">💾 Télécharger</button>
+			<p id="uploadingMessage">Téléversement en cours...</p>
+			<p id="convertingMessage">En attente de conversion...</p>
+			<audio id="audioResult" type="audio/wav" controls></audio>
+			<button id="downloadButton">💾 Télécharger</button>
 		</div>
 		
 		<h2>Développement des méthodes</h2>
@@ -134,9 +134,9 @@
 		<h4> Travail effectué par Thomas BÉCAVIN et Galaad LECONTE dans le cadre du projet de 1ere année du cursus Supélec de l'école CentraleSupélec, sous la supervision de Gilles CHARDON</h4>
 		
 		<script src="static/global.js"></script>
+		<script src="static/display.js"></script>
 		<script src="static/record.js"></script>
 		<script src="static/stop.js"></script>
-		<script src="static/play.js"></script>
 		<script src="static/dismiss.js"></script>
 		<script src="static/convert.js"></script>
 		<script src="static/download.js"></script>
